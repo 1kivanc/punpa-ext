@@ -1,0 +1,21 @@
+{
+  "name": "punpa-ext",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "flask": "^0.2.10",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "vite": "^5.4.21"
+  }
+}

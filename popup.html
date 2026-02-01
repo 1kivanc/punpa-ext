@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Punpa Ingestor</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img src="assets/icon.png" alt="Punpa" class="logo" />
+        <h1>Punpa Ingestor</h1>
+      </header>
+
+      <main>
+        <button id="scan-btn" class="primary-btn">
+          <span class="icon">📸</span> Story Tara
+        </button>
+
+        <div id="status" class="status hidden">
+          <div class="loader"></div>
+          <p id="status-text">İşleniyor...</p>
+        </div>
+
+        <div id="result-area" class="result-area hidden">
+          <div class="form-group">
+            <label>Tarih</label>
+            <input type="text" id="date-input" placeholder="Tarih bulunamadı" />
+          </div>
+          <div class="form-group">
+            <label>Saat</label>
+            <input type="text" id="time-input" placeholder="Saat bulunamadı" />
+          </div>
+          <div class="form-group">
+            <label>Mekan</label>
+            <input
+              type="text"
+              id="location-input"
+              placeholder="Mekan bulunamadı"
+            />
+          </div>
+          <div class="form-group">
+            <label>Konum (Şehir)</label>
+            <input type="text" id="city-input" placeholder="Şehir/Semt" />
+          </div>
+          <div class="form-group">
+            <label>Ham Metin</label>
+            <textarea id="raw-text" rows="3"></textarea>
+          </div>
+          <button id="save-btn" class="secondary-btn">Kaydet</button>
+        </div>
+
+        <div class="history-section">
+          <h3>Son Kaydedilenler</h3>
+          <ul id="history-list"></ul>
+          <button id="export-btn" class="link-btn">JSON İndir</button>
+        </div>
+
+        <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 10px;">
+          <details>
+              <summary style="font-size: 11px; color: var(--text-muted); cursor: pointer;">Hata Günlükleri (Debug Logs)</summary>
+              <pre id="debug-log" style="font-size: 10px; color: #ef4444; white-space: pre-wrap; word-break: break-all; margin-top: 5px; max-height: 100px; overflow: auto;"></pre>
+          </details>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="src/controller/main.js"></script>
+  </body>
+</html>
