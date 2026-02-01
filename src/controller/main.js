@@ -1,7 +1,7 @@
 import { UIManager } from '../ui/ui-manager.js';
 import { StorageService } from '../services/storage-service.js';
 import { OCRService } from '../services/ocr-service.js';
-import { LLMService } from '../services/llm-service.js';
+import { ExtractionService } from '../services/extraction-service.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     
@@ -31,67 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ui = new UIManager();
     const storage = new StorageService();
     const ocrService = new OCRService(process.env.OCR_SERVER_URL);
+    const extractionService = new ExtractionService();
 
-    async function processWithLLM(text) {
-        let settings = await storage.getLLMSettings();
-
-        if (!settings) {
-            settings = {
-                provider: 'custom',
-                apiUrl: process.env.OLLAMA_API_URL,
-                model: process.env.OLLAMA_MODEL,
-                apiKey: 'ollama'
-            };
-        }
-
-        const isCustom = settings.provider === 'custom';
-        const hasValidKey = settings.apiKey && settings.apiKey.length > 5;
-
-        if (!isCustom && !hasValidKey) {
-            ui.log("LLM Ayarlı değil. Regex fallback...", true);
-            ui.updateStatus("LLM Yok -> Regex");
-            fallbackRegex(text);
-            return;
-        }
-
-        ui.log("Yapay Zeka (LLM) ile analiz ediliyor...");
-        ui.updateStatus("Yapay Zeka Analizi...");
-
-        try {
-            const llm = new LLMService(settings);
-            const data = await llm.parse(text, null);
-            
-            ui.log("LLM Yanıtı Başarılı!");
-            ui.fillForm(data, text);
-            ui.showResults();
-            ui.updateStatus("Tamamlandı!");
-
-        } catch (llmErr) {
-            ui.log(`LLM Hatası: ${llmErr.message}`, true);
-            ui.updateStatus("LLM Hatası -> Regex");
-            fallbackRegex(text);
-        }
-    }
-
-    function fallbackRegex(text) {
-        const dateRegex = /(\d{1,2}\s*[./-]\s*\d{1,2}\s*[./-]\s*\d{2,4})|(\d{1,2}\s*(?:Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık))/i;
-        const timeRegex = /(\d{1,2}\s*[:.]\s*\d{2})/;
-        
-        const dateMatch = text.match(dateRegex);
-        const timeMatch = text.match(timeRegex);
-
-        const fallbackData = {
-            tarih: dateMatch ? dateMatch[0] : '',
-            saat: timeMatch ? timeMatch[0] : '',
-            mekan: '',
-            konum: '',
-            sanatci: '',
-            etkinlik: ''
-        };
-        
-        ui.fillForm(fallbackData, text);
-        ui.showResults();
-    }
     if (ui.scanBtn) {
         ui.scanBtn.addEventListener('click', async () => {
             ui.resetForScan();
@@ -108,7 +49,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 ui.log(`OCR Ham Sonuç:\n${rawText.substring(0, 100)}...`);
 
-                await processWithLLM(rawText);
+                ui.updateStatus("Veri ayıklanıyor...");
+                const settings = await storage.getLLMSettings();
+                
+                const { data, source } = await extractionService.extract(rawText, settings, process.env);
+                
+                ui.log(`${source} ile başarıyla ayıklandı.`);
+                ui.fillForm(data, rawText);
+                ui.showResults();
+                ui.updateStatus("Tamamlandı!");
+                // --------------------------------
 
             } catch (error) {
                 ui.log(`Hata: ${error.message}`, true);

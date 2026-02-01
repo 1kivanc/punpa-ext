@@ -10,10 +10,7 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "flask": "^0.2.10",
-    "tesseract.js": "^7.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "dotenv": "^17.2.3",
     "vite": "^5.4.21"

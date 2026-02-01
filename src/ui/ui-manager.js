@@ -13,9 +13,7 @@ export class UIManager {
         this.timeInput = document.getElementById('time-input');
         this.locationInput = document.getElementById('location-input');
         this.cityInput = document.getElementById('city-input');
-        this.cityInput = document.getElementById('city-input');
         this.rawTextInput = document.getElementById('raw-text');
-        this.detachBtn = document.getElementById('detach-btn');
     }
     resetForScan() {
         this.scanBtn.disabled = true;

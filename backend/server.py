@@ -60,8 +60,6 @@ def ocr():
             for line in result[0]:
                 text = line[1][0]
                 full_text_lines.append(text)
-        
-
 
         full_text = "\n".join(full_text_lines)
         
